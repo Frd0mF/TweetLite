@@ -15,7 +15,6 @@ import { UserLoadingSkeleton } from "~/components/UserLoadingSkeleton";
 const CreatePostWizard = () => {
   const { user } = useUser();
   if (!user) return null;
-
   return (
     <div className="flex w-full gap-3">
       <Image
@@ -23,7 +22,7 @@ const CreatePostWizard = () => {
         height={56}
         className="h-14 w-14 rounded-full"
         src={user.profileImageUrl}
-        alt={`${user.username} profile image`}
+        alt={`${user.username || ""} profile image`}
       />
       <input
         placeholder="What's on your mind?"
@@ -37,7 +36,7 @@ type postWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostView = (props: postWithUser) => {
   const { post, author } = props;
-  console.log(`/_next/image?url=${author.profileImageUrl}&w=16&q=1`);
+  if (!post || !author) return null;
   return (
     <div className="flex items-center gap-3 border-b border-slate-500 p-4">
       <Image
@@ -45,11 +44,11 @@ const PostView = (props: postWithUser) => {
         height={56}
         className="h-14 w-14 rounded-full"
         src={author.profileImageUrl}
-        alt={`${author.username} profile image`}
+        alt={`${author.username || ""} profile image`}
       />
       <div className="flex flex-col">
         <div className="flex gap-1 font-semibold text-slate-300">
-          <span>{`@${author.username}`}</span>
+          <span>{`@${author.username || ""}`}</span>
           <span>·</span>
           <span className="font-light">{dayjs(post.createdAt).fromNow()}</span>
         </div>
