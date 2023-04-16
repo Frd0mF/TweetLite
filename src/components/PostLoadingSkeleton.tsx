@@ -14,7 +14,7 @@ export const PostLoadingSkeleton = () => {
             </div>
             <span
               style={{
-                width: Math.floor(Math.random() * 100) + 100 + "%",
+                width: `${Math.floor(Math.random() * 100) + 100}%`,
               }}
               className="h-6 animate-pulse bg-slate-500"
             />

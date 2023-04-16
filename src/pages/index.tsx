@@ -6,7 +6,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-import { RouterOutputs, api } from "~/utils/api";
+import { api } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { PostLoadingSkeleton } from "~/components/PostLoadingSkeleton";
 import { UserLoadingSkeleton } from "~/components/UserLoadingSkeleton";
