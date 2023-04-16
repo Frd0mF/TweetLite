@@ -8,6 +8,8 @@ dayjs.extend(relativeTime);
 
 import { RouterOutputs, api } from "~/utils/api";
 import Image from "next/image";
+import { PostLoadingSkeleton } from "~/components/PostLoadingSkeleton";
+import { UserLoadingSkeleton } from "~/components/UserLoadingSkeleton";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -20,7 +22,7 @@ const CreatePostWizard = () => {
         height={56}
         className="h-14 w-14 rounded-full"
         src={user.profileImageUrl}
-        alt={`${user.username} profile imagge`}
+        alt={`${user.username} profile image`}
       />
       <input
         placeholder="What's on your mind?"
@@ -59,11 +61,7 @@ const PostView = (props: postWithUser) => {
 const Home: NextPage = () => {
   const user = useUser();
 
-  const { data, isLoading } = api.posts.getAll.useQuery();
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (!data) return <div>Something went wrong</div>;
+  const { data, isLoading: postLoading } = api.posts.getAll.useQuery();
 
   return (
     <>
@@ -77,9 +75,11 @@ const Home: NextPage = () => {
           <div className="flex border-b border-slate-500 p-4">
             <div className="flex justify-center"></div>
             {!user.isSignedIn && <SignInButton />}
+            {!user.isLoaded && <UserLoadingSkeleton />}
             {user.isSignedIn && <CreatePostWizard />}
           </div>
           <div className="flex flex-col">
+            {postLoading && <PostLoadingSkeleton />}
             {data?.map((fullPostData) => (
               <PostView {...fullPostData} key={fullPostData.post.id} />
             ))}
