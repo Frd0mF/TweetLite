@@ -11,9 +11,20 @@ import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { PostLoadingSkeleton } from "~/components/PostLoadingSkeleton";
 import { UserLoadingSkeleton } from "~/components/UserLoadingSkeleton";
+import { useState } from "react";
 
 const CreatePostWizard = () => {
+  const [input, setInput] = useState<string>("");
   const { user } = useUser();
+
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      void ctx.posts.getAll.invalidate();
+    },
+  });
   if (!user) return null;
   return (
     <div className="flex w-full gap-3">
@@ -25,9 +36,20 @@ const CreatePostWizard = () => {
         alt={`${user.username || ""} profile image`}
       />
       <input
+        disabled={isPosting}
         placeholder="What's on your mind?"
         className="grow rounded-md bg-transparent px-2 outline-none"
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
+      <button
+        disabled={isPosting}
+        className="w-20 text-slate-100 hover:text-slate-300"
+        onClick={() => mutate({ content: input })}
+      >
+        Post
+      </button>
     </div>
   );
 };
@@ -52,7 +74,7 @@ const PostView = (props: postWithUser) => {
           <span>·</span>
           <span className="font-light">{dayjs(post.createdAt).fromNow()}</span>
         </div>
-        <span>{post.content}</span>
+        <span className="text-2xl">{post.content}</span>
       </div>
     </div>
   );
