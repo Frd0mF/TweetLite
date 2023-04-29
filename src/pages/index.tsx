@@ -12,7 +12,7 @@ import type { RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { PostLoadingSkeleton } from "~/components/PostLoadingSkeleton";
 import { UserLoadingSkeleton } from "~/components/UserLoadingSkeleton";
-import { useRef, useState, KeyboardEvent } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 
 const CreatePostWizard = () => {
@@ -42,7 +42,7 @@ const CreatePostWizard = () => {
     },
   });
 
-  const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && e.shiftKey == false) {
       if (formRef?.current) {
         formRef?.current?.dispatchEvent(
@@ -115,7 +115,7 @@ type postWithUser = RouterOutputs["posts"]["getAll"][number];
 
 const PostView = (props: postWithUser) => {
   const { post, author } = props;
-  if (!post || !author) return null;
+  if (!post || !author || !author.username) return null;
   return (
     <Link href={`/post/${post.id}`}>
       <div className="flex items-start gap-3 border-b border-slate-500 p-4 hover:bg-slate-800 hover:transition-colors">
@@ -130,7 +130,7 @@ const PostView = (props: postWithUser) => {
           <div className="flex gap-1 font-semibold text-slate-300">
             <Link href={`/@${author.username}`}>
               <span className="hover:underline">{`@${
-                author.username || " "
+                author.username || ""
               }`}</span>
             </Link>
             <span>·</span>
