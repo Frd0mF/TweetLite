@@ -74,7 +74,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <PageLayout>
         <div className="pattern-cross relative h-36 pattern-white pattern-bg-slate-900 pattern-opacity-100 pattern-size-8">
           <Image
-            src={data.profileImageUrl}
+            src={data.profileImageUrl || "/Not_Found.png"}
             alt={`${data.username ?? "unknown"}'s profile pic`}
             width={128}
             height={128}

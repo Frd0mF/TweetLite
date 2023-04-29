@@ -65,7 +65,7 @@ const CreatePostWizard = () => {
         width={56}
         height={56}
         className="h-14 w-14 rounded-full"
-        src={user.profileImageUrl}
+        src={user.profileImageUrl || "/Not_Found.png"}
         alt={`${user.username || ""} profile image`}
       />
       <textarea

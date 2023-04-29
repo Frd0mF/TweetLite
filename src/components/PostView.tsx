@@ -19,7 +19,7 @@ export const PostView = (props: postWithUser) => {
           width={56}
           height={56}
           className="h-14 w-14 rounded-full"
-          src={author.profileImageUrl}
+          src={author.profileImageUrl || "/Not_Found.png"}
           alt={`${author.username || ""} profile image`}
         />
         <div className="flex flex-col">
