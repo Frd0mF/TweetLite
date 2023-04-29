@@ -1,25 +1,73 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { GetStaticProps, InferGetStaticPropsType, type NextPage } from "next";
+import {
+  type GetStaticProps,
+  type InferGetStaticPropsType,
+  type NextPage,
+} from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { api } from "~/utils/api";
 
 dayjs.extend(relativeTime);
 
-type pageProps = InferGetStaticPropsType<typeof getStaticProps>;
+const ProfileFeed = (props: { userId: string }) => {
+  const { data, error, isLoading } = api.posts.getPostsByUserId.useQuery({
+    userId: props.userId,
+  });
 
-const ProfilePage: NextPage<pageProps> = ({ username }) => {
-  const { data, error } = api.profile.getUserByUsername.useQuery({
+  if (isLoading) {
+    return (
+      <div className="flex flex-col space-y-4">
+        <PostLoadingSkeleton />
+        <PostLoadingSkeleton />
+        <PostLoadingSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Something went wrong</div>;
+  }
+
+  if (!data || !data.length) {
+    return <div className="p-4">The user has not posted anything yet!</div>;
+  }
+
+  return (
+    <div className="flex flex-col space-y-4">
+      {data.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost.post.id} />
+      ))}
+    </div>
+  );
+};
+
+const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
+  const { data } = api.profile.getUserByUsername.useQuery({
     username,
   });
 
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
   if (!data) {
-    return <div>Something went wrong</div>;
+    return (
+      <>
+        <PageLayout>
+          <div className="pattern-cross relative h-36 pattern-white pattern-bg-slate-900 pattern-opacity-100 pattern-size-8">
+            <Image
+              src={"/Not_Found.png"}
+              alt="Not_Found's profile pic"
+              width={128}
+              height={128}
+              className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black "
+            />
+          </div>
+          <div className="h-[64px]"></div>
+          <div className="p-4 text-2xl font-bold">@Not_Found</div>
+          <div className="w-full border-b border-slate-400" />
+          <ProfileFeed userId={"Not_Found"} />
+        </PageLayout>
+      </>
+    );
   }
 
   return (
@@ -42,7 +90,7 @@ const ProfilePage: NextPage<pageProps> = ({ username }) => {
           data.username ?? "unknown"
         }`}</div>
         <div className="w-full border-b border-slate-400" />
-        {/* <ProfileFeed userId={data.id} /> */}
+        <ProfileFeed userId={data.id} />
       </PageLayout>
     </>
   );
@@ -53,6 +101,8 @@ import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 import SuperJSON from "superjson";
 import { PageLayout } from "~/components/layout";
+import { PostLoadingSkeleton } from "~/components/PostLoadingSkeleton";
+import { PostView } from "~/components/PostView";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createServerSideHelpers({
