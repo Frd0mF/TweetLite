@@ -27,11 +27,11 @@ const CreatePostWizard = () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
     },
-    onError: (err) => {
+    onError: () => {
       toast.custom(
         () => (
           <div className="rounded-lg border border-slate-400 bg-red-600 p-4 font-bold text-white shadow-lg">
-            Can't create post please try again later.
+            Can&apos;t create post please try again later.
           </div>
         ),
         {
@@ -130,7 +130,7 @@ const PostView = (props: postWithUser) => {
           <div className="flex gap-1 font-semibold text-slate-300">
             <Link href={`/@${author.username}`}>
               <span className="hover:underline">{`@${
-                author.username || ""
+                author.username || " "
               }`}</span>
             </Link>
             <span>·</span>
