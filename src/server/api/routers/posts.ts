@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { filterUserForClient } from "~/helpers/filterUserForClient";
+import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 
 import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
 import { Redis } from "@upstash/redis";
@@ -93,5 +93,16 @@ export const postsRouter = createTRPCRouter({
         orderBy: [{ createdAt: "desc" }],
       });
       return addUserDateToPost(posts);
+    }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return (await addUserDateToPost([post]))[0];
     }),
 });
