@@ -21,7 +21,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
         <div className="w-full border-b border-slate-400">
           <input
             className="w-full bg-transparent p-4 text-sm font-light"
-            placeholder="Comments comming soon..."
+            placeholder="Comments coming soon..."
           />
         </div>
       </PageLayout>
