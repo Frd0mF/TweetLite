@@ -52,6 +52,7 @@ const CreatePostWizard = () => {
   };
 
   if (!user) return null;
+  console.log(user.profileImageUrl);
   return (
     <form
       ref={formRef}
